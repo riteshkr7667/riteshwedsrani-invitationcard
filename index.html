@@ -58,9 +58,30 @@
       Just a ping away for any queries: +91 7667327639
       <span></span>
    </p>
+
+   <!-- Audio & Play Button -->
    <div class="music">
-<audio src="song.mp3" id="my_audio" loop autoplay playsinline></audio>
+      <audio src="song.mp3" id="my_audio" loop playsinline></audio>
    </div>
+
+   <!-- Play Button (will be shown only if autoplay is blocked) -->
+   <div id="music-toggle" style="
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #fff;
+      padding: 12px 18px;
+      border-radius: 30px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      font-size: 16px;
+      cursor: pointer;
+      z-index: 9999;
+      font-family: 'Dancing Script', cursive;
+   ">
+      🎵 Tap to Play Music
+   </div>
+
    <p class="happiness">Join us in our happiness!<br>
       <a href="#" target="_blank" class="twitter"><i class="fa fa-twitter"></i></a>
    </p>
@@ -68,28 +89,30 @@
    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js'></script>
    <script src='https://cdn.jsdelivr.net/gh/timoschaefer/jQuery-Sakura/jquery-sakura.min.js'></script>
    <script src="script.js"></script>
-<script>
-  window.addEventListener('load', () => {
-    const audio = document.getElementById('my_audio');
 
-    const tryPlay = () => {
-      audio.play().then(() => {
-        // Success — remove event listeners
-        document.body.removeEventListener('click', tryPlay);
-        document.body.removeEventListener('touchstart', tryPlay);
-      }).catch((err) => {
-        console.log("Autoplay blocked:", err);
+   <script>
+      window.addEventListener('load', () => {
+         const audio = document.getElementById('my_audio');
+         const toggleBtn = document.getElementById('music-toggle');
+
+         const tryPlay = () => {
+            audio.play().then(() => {
+               toggleBtn.style.display = 'none'; // Hide button on success
+            }).catch((err) => {
+               console.log("Autoplay blocked:", err);
+               toggleBtn.style.display = 'block'; // Show play button if blocked
+            });
+         };
+
+         // Try to autoplay
+         tryPlay();
+
+         // Manual interaction fallback
+         toggleBtn.addEventListener('click', tryPlay);
+         document.body.addEventListener('click', tryPlay, { once: true });
+         document.body.addEventListener('touchstart', tryPlay, { once: true });
       });
-    };
-
-    // Try playing right away
-    tryPlay();
-
-    // In case it's blocked, wait for user interaction
-    document.body.addEventListener('click', tryPlay);
-    document.body.addEventListener('touchstart', tryPlay);
-  });
-</script>
+   </script>
 
 </body>
 </html>
